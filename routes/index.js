@@ -26,7 +26,8 @@ db.on("error", console.error.bind(console, "MongoDB connection error!!!"));
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  //res.render('index', { title: 'Express' });
+  res.redirect('/register.html');
 });
 
 router.post('/api/user/register', 
