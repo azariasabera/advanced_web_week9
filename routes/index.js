@@ -4,6 +4,9 @@ const bcrypt = require('bcryptjs');
 const {body, validationResult} = require('express-validator');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 require('dotenv').config();
 require('../auth/validateToken');
@@ -26,8 +29,8 @@ db.on("error", console.error.bind(console, "MongoDB connection error!!!"));
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  //res.render('index', { title: 'Express' });
-  res.redirect('/register.html');
+  res.render('index', { title: 'Express' });
+  //res.redirect('/register.html');
 });
 
 router.post('/api/user/register', 
@@ -65,6 +68,7 @@ router.post('/api/user/register',
 });
 //// at least one lowercase letter, one uppercase letter, one number, and one special character
 router.post('/api/user/login', 
+  upload.none(),
   body('email').isEmail(),
   body('password')
   .isLength({ min: 8 })

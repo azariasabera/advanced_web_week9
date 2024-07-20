@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="javascripts/login.js" defer></script>
     <title>Login</title>
 </head>
 <body>
     <h1>Login</h1>
-    <form action="/api/user/login" method="post">
+    <form action="" method="post" id="login-form"> <!--will do action in js-->
         <input type="email" id="email" name="email" placeholder="email">
         <input type="password" id="password" name="password" placeholder="password">
         <input type="submit" value="Login">
