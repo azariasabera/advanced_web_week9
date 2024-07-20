@@ -1,0 +1,51 @@
+// this will handle the home page
+// If not logged in, show links to login and register
+// If logged in, show email linked to the token, and a logout button
+
+// It will be like this:
+
+let notLoggedDiv = document.getElementById('notLogged')
+let loggedDiv = document.getElementById('logged')
+
+if (localStorage.getItem('auth_token')) {
+    notLoggedDiv.innerHTML = ''
+    let email = document.createElement('h1')
+    email.textContent = 'You\'re logged in'
+    loggedDiv.appendChild(email)
+
+    let logout = document.createElement('button')
+    logout.textContent = 'Logout'
+    logout.setAttribute('id', 'logout')
+    logout.onclick = () => {
+        localStorage.removeItem('auth_token')
+        window.location.href = '/'
+    }
+    loggedDiv.appendChild(logout)
+
+    // to show the email linked to the token, we need to decode the token:
+    let token = localStorage.getItem('auth_token')
+    let payload = token.split('.')[1]
+    let decodedPayload = atob(payload)
+    let emailFromToken = JSON.parse(decodedPayload).email
+    let emailP = document.createElement('p')
+    emailP.textContent = `Email: ${emailFromToken}`
+    loggedDiv.appendChild(emailP)
+
+} else {
+    let h1 = document.createElement('h1')
+    h1.textContent = 'Register or Login to access the content'
+    notLoggedDiv.appendChild(h1)
+    
+    let register = document.createElement('a')
+    register.href = '/register.html'
+    register.textContent = 'Register'
+    notLoggedDiv.appendChild(register)
+
+    notLoggedDiv.appendChild(document.createElement('br'))
+    notLoggedDiv.appendChild(document.createElement('br'))
+
+    let login = document.createElement('a')
+    login.href = '/login.html'
+    login.textContent = 'Login'
+    notLoggedDiv.appendChild(login)
+}
