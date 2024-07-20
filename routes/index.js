@@ -53,7 +53,8 @@ router.post('/api/user/register',
                     password: hashedPassword
                 });
                 newUser.save();
-                res.send('User registered');
+                //res.send('User registered');
+                res.redirect('/login.html');
             } else {
                 res.status(403).send('email already exists');
             }
