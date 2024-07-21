@@ -57,9 +57,7 @@ if (localStorage.getItem('auth_token')) {
                 .then(data => {
                     console.log(data)
                     addItem.value = ''
-                    let p = document.createElement('p')
-                    p.textContent = data.items
-                    loggedDiv.appendChild(p)
+                    displayItems(data.items)
                 })
                 .catch(error => {
                     console.error('Error:', error)
@@ -67,8 +65,6 @@ if (localStorage.getItem('auth_token')) {
         }
     })
             
-
-
 } else {
     let h1 = document.createElement('h1')
     h1.textContent = 'Register or Login to access the content'
@@ -86,4 +82,14 @@ if (localStorage.getItem('auth_token')) {
     login.href = '/login.html'
     login.textContent = 'Login'
     notLoggedDiv.appendChild(login)
+}
+
+function displayItems(items) {
+    let itemsDiv = document.getElementById('items')
+    itemsDiv.innerHTML = ''
+    items.forEach(item => {
+        let p = document.createElement('p')
+        p.textContent = item
+        itemsDiv.appendChild(p)
+    })
 }
