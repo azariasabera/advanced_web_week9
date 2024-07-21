@@ -23,7 +23,10 @@ async function onSubmit(event) {
             window.location.href = '/login.html';
         } else {
             let data = await response.text();
-            alert(data);
+            //alert(data);
+            let error = document.getElementById('error-message');
+            error.textContent = data;
+
         }
     }
     catch (error) {
