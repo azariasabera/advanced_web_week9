@@ -152,8 +152,29 @@ router.post('/api/todos',
     } catch (error) {
       return res.status(500).send(`Error occurred: ${error}`);
     }
-  }
-);
+});
+
+router.get('/api/todos',
+  passport.authenticate('jwt', {session: false}),
+  async (req, res) => {
+    try {
+      const user = await Users.findOne({ email: req.user });
+      if (!user) {
+        return res.status(403).send('User not found');
+      } else {
+        const user_id = user._id;
+        let todo = await Todo.findOne({ user: user_id });
+        if (!todo) {
+          return res.json({ items: [] });
+        } else {
+          return res.json(todo);
+        }
+      }
+    } catch (error) {
+      return res.status(500).send(`Error occurred: ${error}`);
+    }
+});
+
 
 
 module.exports = router;

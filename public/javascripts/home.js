@@ -9,19 +9,26 @@ let loggedDiv = document.getElementById('logged')
 
 if (localStorage.getItem('auth_token')) {
     notLoggedDiv.innerHTML = ''
-    let logout = document.getElementById('logout')
+ 
+    let logout = document.createElement('button')
+    logout.textContent = 'Logout'
+    logout.setAttribute('id', 'logout')
     logout.onclick = () => {
         localStorage.removeItem('auth_token')
         window.location.href = '/'
     }
+    loggedDiv.appendChild(logout)
 
     // to show the email linked to the token, we need to decode the token:
     let token = localStorage.getItem('auth_token')
     let payload = token.split('.')[1]
     let decodedPayload = atob(payload)
     let emailFromToken = JSON.parse(decodedPayload).email
-    let email = document.getElementById('user-email')
-    email.textContent = `Email: ${emailFromToken}`
+    let emailP = document.createElement('p')
+    emailP.textContent = `Email: ${emailFromToken}`
+    loggedDiv.appendChild(emailP)
+
+    fetchTodos(token);  
 
     let addItem = document.getElementById('add-item')
     // when user clicks enter in the input field, it should click the add button
@@ -58,7 +65,6 @@ if (localStorage.getItem('auth_token')) {
     })
             
 } else {
-    loggedDiv.style.display = 'none'
     let h1 = document.createElement('h1')
     h1.textContent = 'Register or Login to access the content'
     notLoggedDiv.appendChild(h1)
@@ -85,4 +91,27 @@ function displayItems(items) {
         p.textContent = item
         itemsDiv.appendChild(p)
     })
+}
+
+function fetchTodos(token) {
+    fetch('/api/todos', {
+        method: 'GET',
+        headers: {
+            'authorization': `Bearer ${token}`
+        },
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json()
+            } else {
+                throw new Error('Failed to fetch todos')
+            }
+        })
+        .then(data => {
+            console.log(data)
+            displayItems(data.items)
+        })
+        .catch(error => {
+            console.error('Error:', error)
+        })
 }
