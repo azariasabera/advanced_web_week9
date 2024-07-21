@@ -3,12 +3,12 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-  input#add-item(type="text", placeholder="Add Item")
-  br
   div#notLogged
-  br
-  br
   div#logged
-  div#items
+    h1 You are logged in
+    button#logout Logout
+    p#user-email
+    input#add-item(type='text', placeholder='Add item')
+    div#items
   script(src='javascripts/home.js')
 
