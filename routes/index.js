@@ -34,10 +34,11 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/api/user/register', 
+  upload.none(),
   body('email').isEmail(),
   body('password')
   .isLength({ min: 8 })
-  .matches(/[a-z]/)
+  .matches(/[a-z]/).withMessage('at least one lowercase letter')
   .matches(/[A-Z]/)
   .matches(/[0-9]/)
   .matches(/[~`!@#$%^&*()-_+={}[]|\;:"<>,.?|\/]/) // to include / used \ before /
@@ -45,7 +46,7 @@ router.post('/api/user/register',
   ,(req, res, next)=>{  
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(400).send('Password is not strong enough');
     }
   // See the teacher's code for .findOne() method in week7 repo.
     Users.findOne({email: req.body.email})
@@ -57,10 +58,10 @@ router.post('/api/user/register',
                     password: hashedPassword
                 });
                 newUser.save();
-                //res.send('User registered');
-                res.redirect('/login.html');
+                return res.send('User registered');
+                //res.redirect('/login.html');
             } else {
-                res.status(403).send('email already exists');
+                return res.status(403).send('Email already in use');
             }
         }).catch((error) => {
             res.status(500).send(`Error occured: ${error}`);
@@ -80,7 +81,7 @@ router.post('/api/user/login',
   ,async (req, res)=>{
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(400).send('Invalid credentials');
     }
     Users.findOne({email: req.body.email})
         .then(async (user) => {
@@ -103,11 +104,11 @@ router.post('/api/user/login',
                           }
                       })}
                 else{
-                    res.status(403).send('Login failed, password incorrect');
+                    res.status(403).send('Invalid credentials');
                 }
             }
             else{
-                res.status(403).send('Login failed, user not found');
+                res.status(403).send('Invalid credentials');
             }
         }
     ).catch((error) => {

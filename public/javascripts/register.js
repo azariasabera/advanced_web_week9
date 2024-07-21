@@ -7,32 +7,26 @@ else {
 
 function initializeCodeLogin() {
     // Code to run when the document is ready
-    document.getElementById('login-form').addEventListener('submit', onSubmit);
+    document.getElementById('register-form').addEventListener('submit', onSubmit);
 }
 
 async function onSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
-    
+
     try {
-        let response = await fetch('/api/user/login', {
+        let response = await fetch('/api/user/register', {
             method: 'POST',
             body: formData
-        });
-
+        })
         if (response.ok) {
-            let data = await response.json();
-            if (data.token) {
-                localStorage.setItem('auth_token', data.token);
-                window.location.href = '/';
-            }
-            else {
-                console.error('Token not found');
-            }
+            window.location.href = '/login.html';
         } else {
             let data = await response.text();
             alert(data);
         }
-} catch (error) {
-    console.error('Error:', error);
-}}
+    }
+    catch (error) {
+        console.error('Error:', error);
+    }
+}

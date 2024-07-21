@@ -31,6 +31,44 @@ if (localStorage.getItem('auth_token')) {
     emailP.textContent = `Email: ${emailFromToken}`
     loggedDiv.appendChild(emailP)
 
+    let addItem = document.getElementById('add-item')
+    // when user clicks enter in the input field, it should click the add button
+    addItem.addEventListener('keyup', function(event) {
+        if (event.keyCode === 13) {
+            event.preventDefault()
+            let item = {
+                items: [addItem.value]
+            }
+            fetch('/api/todos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(item),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json()
+                    } else {
+                        throw new Error('Failed to add item')
+                    }
+                })
+                .then(data => {
+                    console.log(data)
+                    addItem.value = ''
+                    let p = document.createElement('p')
+                    p.textContent = data.items
+                    loggedDiv.appendChild(p)
+                })
+                .catch(error => {
+                    console.error('Error:', error)
+                })
+        }
+    })
+            
+
+
 } else {
     let h1 = document.createElement('h1')
     h1.textContent = 'Register or Login to access the content'
